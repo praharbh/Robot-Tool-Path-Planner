@@ -19,7 +19,6 @@ import networkx as nx
 import random
 import math
 import numpy as np
-# import matplotlib.pyplot as plt
 
 class assert_isdone(object):
     def __init__(self, to_check, error_statement):
@@ -197,8 +196,6 @@ if __name__ == "__main__":
 
     tool_shape = read_step('CAD/'+tool_name+'.stp')
     tool_tcp_pnts,tool_tcp_vxs,tool_tcp_vys,tool_tcp_vzs=read_pnts('CSV/'+tool_name+'.csv')
-    # display.DisplayShape(tool_shape, color=None, transparency= 0, update=True)
-    # display_coords(tool_tcp_pnts,tool_tcp_vxs,tool_tcp_vys,tool_tcp_vzs)
     ais_shape = display.DisplayShape(tool_shape, color='BLACK', transparency= 0, update=True)
     custom_menu()
 
@@ -206,10 +203,8 @@ if __name__ == "__main__":
     if False:
         print('Genrating Sequence Path...')
         
-        for i in range(0,50):#len(part_pnts),1):
+        for i in range(len(part_pnts),1):
             for j in range(0,len(tool_tcp_pnts)):
-            # while (True):
-                # j=random.randint(0,len(tool_tcp_pnts)-1)
                 ntool_loc = htransform2(tool_tcp_pnts[j],tool_tcp_vxs[j],tool_tcp_vys[j],tool_tcp_vzs[j],part_pnts[i], part_xdir[i], part_ydir[i], part_zdir[i])
                 # print('query')
                 c=collision(part_shape, tool_shape.Moved(ntool_loc))
@@ -305,8 +300,6 @@ if __name__ == "__main__":
             except:
                 break
             count=count+1
-            # if count>notcp:
-            #     break
             print('Iteration #:',count)
             path_c=1
 
