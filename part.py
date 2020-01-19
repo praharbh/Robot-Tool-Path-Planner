@@ -38,14 +38,6 @@ def collision(shp1, shp2):
     bdss.Perform()
     with assert_isdone(bdss, 'failed computing minimum distances'):
         min_dist = bdss.Value()
-        # min_dist_shp1, min_dist_shp2 = [], []
-        # for i in range(1, bdss.NbSolution()+1):
-        #     min_dist_shp1.append(bdss.PointOnShape1(i))
-        #     min_dist_shp2.append(bdss.PointOnShape2(i))
-    # if min_dist>0:
-    #     flag=0
-    # else:
-    #     flag=1
     return min_dist
 
 def read_step(fileloc):
@@ -79,15 +71,12 @@ def htransform2(tpnt,tvx,tvy,tvz,pnt,vx,vy,vz):
     tvy.Normalize()
     tvz.Normalize()
     tpnt=gp_Pnt((gp_Vec(tpnt.XYZ()) + tvz*0.1).XYZ())
-    # tpnt=gp_Pnt((gp_Vec(tpnt.XYZ()) + tvz*2).XYZ())
 
     vx = vy.Crossed(vz)
     vy = vz.Crossed(vx)
     vx.Normalize()
     vy.Normalize()
     vz.Normalize()
-    
-    # tshape=copy.deepcopy(shape)
     
     Tt=gp_GTrsf(gp_Mat(tvx.X(),tvy.X(),tvz.X(),tvx.Y(),tvy.Y(),tvz.Y(),tvx.Z(),tvy.Z(),tvz.Z()),gp_XYZ(tpnt.X(),tpnt.Y(),tpnt.Z()))
     Tt.Invert()
@@ -97,9 +86,6 @@ def htransform2(tpnt,tvx,tvy,tvz,pnt,vx,vy,vz):
     dispt = gp_Vec(Tt.TranslationPart().X(),Tt.TranslationPart().Y(),Tt.TranslationPart().Z())
     trsft = gp_Trsf()
     trsft.SetTransformation(quatt,dispt)
-    # loct = TopLoc_Location(trsft)
-    # loct = loct*tshape.Location()
-    # tshape.Location(loct)
 
     rotp = gp_Mat(vx.X(),vy.X(),vz.X(),vx.Y(),vy.Y(),vz.Y(),vx.Z(),vy.Z(),vz.Z())
     quatp = gp_Quaternion(rotp)
@@ -107,25 +93,9 @@ def htransform2(tpnt,tvx,tvy,tvz,pnt,vx,vy,vz):
     trsfp = gp_Trsf()
     trsfp.SetTransformation(quatp,dispp)
     trsfo=trsfp.Multiplied(trsft)
-    # locp = TopLoc_Location(trsfp)
-    # locp = locp*tshape.Location()
-    # tshape.Location(locp)
     loco = TopLoc_Location(trsfo)
-    # loco = loco*tshape.Location()
-    # tshape.Location(loco)
     
     return loco
-
-# def animation(tpnts,txdir,tydir,tzdir,shape,pnts,xdir,ydir,zdir,extshape,step):
-#     ais_shape = display.DisplayShape(shape, color='BLACK', transparency= 0, update=True)
-#     for i in range(0,len(pnts),step):
-#         j=1
-#         toploc, XXX = htransform2(tpnts[j],txdir[j],tydir[j],tzdir[j],shape,pnts[i],xdir[i],ydir[i],zdir[i])
-#         display.Context.SetLocation(ais_shape, toploc)
-#         display.Context.UpdateCurrentViewer()
-#         t=time.time()
-#         print('collision',collision(extshape,XXX))
-#         print('time',(time.time()-t))
 
 def animate_tool():
     for i in range(0,len(path_tool_loc)):
@@ -358,25 +328,6 @@ if __name__ == "__main__":
                     node_list.remove(path[l])
                     for m in range(0,notcp):
                         DG[(l-1)*notcp+(m+1)][path[l]]['weight']=DG[(l-1)*notcp+(m+1)][path[l]]['weight']+100000000
-                    # DG[path[l-1]][path[l]]['weight']=1000000000000000000
-                    # DG.remove_node(path[l])
-                    
-                    # if path[l] in rem_node:
-                    #     print('Error!!!')
-                    # rem_node.append(path[l])
-
-                    # deltcps[l]=deltcps[l]+1
-                    # if deltcps[l]>=notcp:
-                    #     # pnt_list.remove(l)
-                    #     n=1
-                    #     while(deltcps[l-n]>=notcp):
-                    #         n=n+1
-                    #     m=1
-                    #     # # while(deltcps[l+m]>=notcp):
-                    #     # #     m=m+1
-                    #     DG.add_edge(path[l-n],path[l+m])
-                    #     DG[path[l-n]][path[l+m]]['weight']=0
-                    # print(path[l],',',c,',',k,',',l)
 
         print('Path Ready to Animate')
         toc2=time.time()-tic2
@@ -394,40 +345,5 @@ if __name__ == "__main__":
             ftool_loc=htransform2(tool_tcp_pnts[k],tool_tcp_vxs[k],tool_tcp_vys[k],tool_tcp_vzs[k],part_pnts[l], part_xdir[l], part_ydir[l], part_zdir[l])
             path_tool_loc.append(ftool_loc)
         print('Successful Waypoints:', len(path_tool_loc))
-    # nx.draw_circular(DG)
-    # plt.show()
-
-    ################################################################################
-    # display.DisplayShape(tool_shape, color=None, transparency= 0, update=True)
-    # display_coord(gp_Pnt(0,0,0),gp_Vec(1,0,0),gp_Vec(0,1,0),gp_Vec(0,0,1))
-    # display_coord(gp_Pnt(200,200,200),gp_Vec(0,1,0),gp_Vec(0,0,1),gp_Vec(1,0,0))
-    # j=0
-    # display_coord(tool_tcp_pnts[j],tool_tcp_vxs[j],tool_tcp_vys[j],tool_tcp_vzs[j])
-    # xxx,ntool_shape = htransform2(tool_tcp_pnts[j],tool_tcp_vxs[j],tool_tcp_vys[j],tool_tcp_vzs[j],tool_shape,gp_Pnt(200,200,200),gp_Vec(0,1,0),gp_Vec(0,0,1),gp_Vec(1,0,0))
-    # display.DisplayShape(ntool_shape, color='BLACK', transparency= 0.5, update=True)
-
-    ##############################################################################################
-    # tool_tshape = htransform(tool_shape,tempt,tempx,tempy,tempz)
-    # value = minimum_distance(part_shape,tool_tshape)
-    # display_coord(tempt,tempx,tempy,tempz)
-    # display.DisplayShape(part_shape, color='BLACK', transparency= 0.5, update=False)
     
-    # display.Erase()
-
-    # step_reader.ReadFile('CAD/wp1.stp')
-    # step_reader.TransferRoot()
-    # shape2 = step_reader.Shape()
-
-    # display.SetSelectionModeFace()
-    # display.register_select_callback(recognize_clicked)
-    # display.DisplayShape(shape1, color='BLUE', transparency= 0.2, update=True)
-
-    # t=time.time()
-    # value = minimum_distance(shape1,shape2)
-    # t=time.time()-t
-    # print(value)
-    # print(t)
-    # add_menu('sup?')
-    # add_function_to_menu('sup?', minimum_distance(shape1,shape2))
-
     start_display()
