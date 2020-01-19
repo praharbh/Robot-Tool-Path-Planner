@@ -54,14 +54,6 @@ def generate_TCP():
 	numofrots=8
 	for sur in surf:
 		umin, umax, vmin, vmax = shapeanalysis_GetFaceUVBounds(sur)
-
-		# num2 = round(20*(umax-umin)/(vmax-vmin))
-		# if num2==0:
-		# 	num2=2
-		# num1 = round(20*(vmax-vmin)/(umax-umin))
-		# if num1==0:
-		# 	num1=2		
-		# print(num1*num2)
 		bsur = BRepAdaptor_Surface(sur, True)
 		for i in range(0,num1+1):
 			for j in range(0,num2+1):
@@ -76,11 +68,6 @@ def generate_TCP():
 						break
 
 				if flag==0:
-					# print(point.X(),',',point.Y(),',',point.Z())
-					# tool_tcp_pnts.append(point)
-					# tool_tcp_vxs.append(Vx)
-					# tool_tcp_vys.append(Vy)
-					# tool_tcp_vzs.append(Vz)
 					for k in range(0,numofrots):
 						ang=2*math.pi/numofrots
 						tool_tcp_pnts.append(point)
@@ -89,34 +76,10 @@ def generate_TCP():
 						# print(Vx.X(),',',Vx.Y(),',',Vx.Z())
 						Vy=Vy.Rotated(gp_Ax1(point,gp_Dir(Vz)),ang)
 						tool_tcp_vys.append(Vy)
-						tool_tcp_vzs.append(Vz)
-	
-	# tcp_points=[]
-	# tcp_Vxs=[]
-	# tcp_Vys=[]
-	# tcp_Vzs=[]
-	# for k in range(0,len(points)):
-	# 	# print(points[0].Distance(points[k]))
-	# 	if k==0:
-	# 		tcp_points.append(points[k])
-	# 		tcp_Vxs.append(Vxs[k])
-	# 		tcp_Vys.append(Vys[k])
-	# 		tcp_Vzs.append(Vzs[k])
-	# 	else:
-	# 		for tcp_point in tcp_points:
-	# 			if tcp_point.Distance(points[k])>15:
-	# 				tcp_points.append(points[k])
-	# 				tcp_Vxs.append(Vxs[k])
-	# 				tcp_Vys.append(Vys[k])
-	# 				tcp_Vzs.append(Vzs[k])		
+						tool_tcp_vzs.append(Vz)	
 
 	display_coord(tool_tcp_pnts,tool_tcp_vxs,tool_tcp_vys,tool_tcp_vzs)
 	display.DisplayMessage(gp_Pnt(100,100,100),'TCP #:'+str(len(tool_tcp_pnts)),height=None, message_color=(1,1,1), update=True)
-	# display_coord(tcp_points,tcp_Vxs,tcp_Vys,tcp_Vzs)
-			# return point,Vx,Vy,Vz
-			# display.DisplayShape(point, update=True)
-			# rtcp.append([point.X(),point.Y(),point.Z(),Vx.X(),Vx.Y(),Vx.Z(),Vy.X(),Vy.Y(),Vy.Z(),Vz.X(),Vz.Y(),Vz.Z()])
-			# rtcp.append([point,Vx,Vy,Vz])
 
 def read_step(fileloc):
     step_reader = STEPControl_Reader()
@@ -198,12 +161,7 @@ if __name__ == "__main__":
 
 	shape_selection('F')
 	display.register_select_callback(recognize_clicked)
-	# display.SetPerspectiveProjection()
 
 	custom_menu()
 
 	start_display()
-
-	# stl_writer = StlAPI_Writer()
-	# stl_writer.SetASCIIMode(True)
-	# stl_writer.Write(surf,'CAD/shape.stl')
